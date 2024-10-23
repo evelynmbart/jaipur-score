@@ -3,6 +3,8 @@ import { NewGame } from "./pages/NewGame";
 import { Game } from "./pages/Game";
 import styled from "styled-components";
 import "./App.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export function App() {
   const [player1, setPlayer1] = useState(null);
@@ -21,6 +23,7 @@ export function App() {
             setPlayer2={setPlayer2}
             startGame={() => setGameStarted(true)}
           />}
+      <ToastContainer position="bottom-right" theme="dark" />
     </Container>
   );
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Tag } from "../components/Tag";
 import { Token } from "../components/Token";
 import { RESOURCES, BONUSES } from "../constants";
+import { toast } from "react-toastify";
 
 export function Game({ player1, player2 }) {
   const [score1, setScore1] = useState(0);
@@ -20,9 +21,8 @@ export function Game({ player1, player2 }) {
     }
 
     // Add base tokens to score and remove them from the resource
-    let score = resource.values
-      .slice(0, quantity)
-      .reduce((acc, value) => acc + value, 0);
+    let tokens = resource.values.slice(0, quantity);
+    let score = tokens.reduce((acc, value) => acc + value, 0);
     setResources(
       resources.map(
         r =>
@@ -34,8 +34,9 @@ export function Game({ player1, player2 }) {
 
     // Add bonus token if applicable and remove it from the bonus
     const bonus = bonuses.find(b => b.name === quantity);
-    if (bonus) {
-      score += bonus.values.slice(0, 1)[0] ?? 0;
+    const bonusToken = bonus?.values.slice(0, 1)[0] ?? 0;
+    if (bonusToken) {
+      score += bonusToken;
       setBonuses(
         bonuses.map(
           b => (b.name === quantity ? { ...b, values: b.values.slice(1) } : b)
@@ -49,6 +50,10 @@ export function Game({ player1, player2 }) {
     } else {
       setScore2(score2 + score);
     }
+
+    toast(
+      `${player === 1 ? player1 : player2} sold ${quantity} ${resourceName} for ${score} points [${tokens.join(' ')}${bonusToken ? ` +${bonusToken}` : ""}]`
+    );
   };
 
   return (
