@@ -3,7 +3,8 @@ import "react-tippy/dist/tippy.css";
 import { Tooltip } from "react-tippy";
 import { useState } from "react";
 
-export function Tag({ resource, player1, player2 }) {
+export function Tag({ resource, player1, player2, sell }) {
+  const [open, setOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(1); // 1 or 2
   const [selectedQuantity, setSelectedQuantity] = useState(1);
 
@@ -35,7 +36,7 @@ export function Tag({ resource, player1, player2 }) {
           </SaleRow>
           <SaleRow>
             Quantity:
-            {Array.from({ length: 5 }, (_, i) => i + 1).map(quantity =>
+            {Array.from({ length: 5 }, (_, i) => i + 2).map(quantity =>
               <RadioButton
                 key={quantity}
                 selected={selectedQuantity === quantity}
@@ -48,7 +49,14 @@ export function Tag({ resource, player1, player2 }) {
             )}
           </SaleRow>
           <SaleRow>
-            <SellButton bgcolor={resource.bgcolor} color={resource.color}>
+            <SellButton
+              bgcolor={resource.bgcolor}
+              color={resource.color}
+              onClick={() => {
+                sell(resource.name, selectedPlayer, selectedQuantity);
+                setOpen(false);
+              }}
+            >
               Sell
             </SellButton>
           </SaleRow>
@@ -58,6 +66,7 @@ export function Tag({ resource, player1, player2 }) {
       trigger="click"
       interactive={true}
       duration={100}
+      open={open}
     >
       <Container
         color={resource.color}
@@ -65,6 +74,7 @@ export function Tag({ resource, player1, player2 }) {
         onClick={() => {
           setSelectedPlayer(1);
           setSelectedQuantity(1);
+          setOpen(true);
         }}
       >
         {resource.name}

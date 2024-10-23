@@ -3,13 +3,53 @@ import { Card } from "../components/Card";
 import { useState } from "react";
 import { Tag } from "../components/Tag";
 import { Token } from "../components/Token";
-import { RESOURCES } from "../constants";
+import { RESOURCES, BONUSES } from "../constants";
 
 export function Game({ player1, player2 }) {
   const [score1, setScore1] = useState(0);
   const [score2, setScore2] = useState(0);
 
   const [resources, setResources] = useState(RESOURCES);
+  const [bonuses, setBonuses] = useState(BONUSES);
+
+  const sell = (resourceName, player, quantity) => {
+    const resource = resources.find(r => r.name === resourceName);
+    if (!resource) {
+      console.error("Resource not found", resourceName);
+      return;
+    }
+
+    // Add base tokens to score and remove them from the resource
+    let score = resource.values
+      .slice(0, quantity)
+      .reduce((acc, value) => acc + value, 0);
+    setResources(
+      resources.map(
+        r =>
+          r.name === resourceName
+            ? { ...r, values: r.values.slice(quantity) }
+            : r
+      )
+    );
+
+    // Add bonus token if applicable and remove it from the bonus
+    const bonus = bonuses.find(b => b.name === quantity);
+    if (bonus) {
+      score += bonus.values.slice(0, 1)[0] ?? 0;
+      setBonuses(
+        bonuses.map(
+          b => (b.name === quantity ? { ...b, values: b.values.slice(1) } : b)
+        )
+      );
+    }
+
+    // Add score to the player
+    if (player === 1) {
+      setScore1(score1 + score);
+    } else {
+      setScore2(score2 + score);
+    }
+  };
 
   return (
     <Container>
@@ -24,7 +64,12 @@ export function Game({ player1, player2 }) {
       <Card color="goldenrod" title={"Market"}>
         {resources.map(resource =>
           <Resource>
-            <Tag resource={resource} player1={player1} player2={player2} />
+            <Tag
+              resource={resource}
+              player1={player1}
+              player2={player2}
+              sell={sell}
+            />
             {resource.values.map(value =>
               <Token>
                 {value}
