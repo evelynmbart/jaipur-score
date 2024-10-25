@@ -11,7 +11,7 @@ export function Game({ player1, player2 }) {
   const [score2, setScore2] = useState(0);
 
   const [resources, setResources] = useState(RESOURCES);
-  const [bonuses, setBonuses] = useState(BONUSES);
+  const [bonuses, setBonuses] = useState(BONUSES.map(b => ({ ...b, values: [...b.values].sort(() => Math.random() - 0.5) })));
 
   const sell = (resourceName, player, quantity) => {
     const resource = resources.find(r => r.name === resourceName);
