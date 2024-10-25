@@ -167,7 +167,6 @@ export function Game({ player1, player2 }) {
       <Card color="palevioletred" title={"Controls"}>
         <button onClick={undo} disabled={sales.length === 0}>Undo</button>
         <button onClick={redo} disabled={undoStack.length === 0}>Redo</button>
-        <button>End game</button>
       </Card>
     </Container>
   );
